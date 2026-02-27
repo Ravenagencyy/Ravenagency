@@ -623,18 +623,20 @@ const ADMIN_PASSWORD = "T9@vL3!qZ7#rP2x";
 
 // ===================== SUPABASE CONFIG =====================
 const SB_URL = "https://heienrzgfotwnvumkvbf.supabase.co";
-const SB_KEY = "sb_publishable_CBy1hvQN1jOugdFE0M5Uew_R-o2PFHA";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlaWVucnpnZm90d252dW1rdmJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzA5MTIsImV4cCI6MjA4NzcwNjkxMn0.lrUQkRGBucmh4suBmsMf4OjTBMJip5A0jAE3DrDlDOU";
 
 async function sbFetch(path, options = {}) {
+  const { prefer, headers: extraHeaders, ...fetchOptions } = options;
+  const headers = {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json',
+  };
+  if (prefer) headers['Prefer'] = prefer;
+  if (extraHeaders) Object.assign(headers, extraHeaders);
   const res = await fetch(SB_URL + '/rest/v1/' + path, {
-    ...options,
-    headers: {
-      'apikey': SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || '',
-      ...((options.headers) || {})
-    }
+    ...fetchOptions,
+    headers
   });
   return res;
 }
@@ -667,11 +669,14 @@ async function dbInsert(entry) {
       letta: false
     })
   });
+  const text = await res.text();
+  console.log('Supabase response status:', res.status, 'body:', text);
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || 'Errore inserimento');
+    let err;
+    try { err = JSON.parse(text); } catch { err = { message: text }; }
+    throw new Error('Status ' + res.status + ': ' + (err.message || err.error || text));
   }
-  return await res.json();
+  return text ? JSON.parse(text) : {};
 }
 
 async function dbMarkRead(id) {
