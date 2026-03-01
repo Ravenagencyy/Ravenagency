@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAVEN — Agenzia di Notizie & Gossip</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+--black: #000; --dark: #0a0a0a; --dark2: #111; --dark3: #1a1a1a;
+--red: #e8000a; --white: #fff; --grey: #888; --light: #ccc; --border: #222; --green: #00c851;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; font-weight: 300; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--red); }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 16px 6vw; background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); }
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.25em; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 14px; }
+.nav-logo img { width: 44px; height: 44px; object-fit: cover; border-radius: 50%; border: 2px solid var(--red); }
+.nav-logo span { color: var(--red); }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); text-decoration: none; transition: color 0.3s; }
+.nav-links a:hover { color: var(--white); }
+.nav-cta { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white); background: var(--red); padding: 10px 24px; text-decoration: none; transition: background 0.3s; }
+.nav-cta:hover { background: #c00008; }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 6vw 10vh; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.88) 65%, #000 100%), linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.1) 60%); z-index: 1; }
+.hero-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(232,0,10,0.04) 80px, rgba(232,0,10,0.04) 81px), repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px); z-index: 0; }
+.hero-deco { position: absolute; right: -5vw; top: 50%; transform: translateY(-50%); z-index: 0; animation: floatDeco 8s ease-in-out infinite; }
+.hero-deco img { width: 55vw; max-width: 720px; opacity: 0.06; filter: invert(1) grayscale(1); }
+@keyframes floatDeco { 0%,100%{transform:translateY(-50%) rotate(-3deg);}50%{transform:translateY(-52%) rotate(-1deg);} }
+.hero-tag { position: relative; z-index: 2; font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.5em; text-transform: uppercase; color: var(--red); margin-bottom: 20px; animation: fadeUp 1s ease 0.2s both; }
+.hero-title { position: relative; z-index: 2; font-family: 'Bebas Neue', sans-serif; font-size: clamp(6rem, 18vw, 18rem); line-height: 0.85; letter-spacing: 0.04em; animation: fadeUp 1s ease 0.4s both; }
+.hero-title .accent { display: block; color: var(--red); font-size: 0.18em; letter-spacing: 0.6em; margin-bottom: 10px; font-family: 'Barlow Condensed', sans-serif; font-weight: 300; }
+.hero-subtitle { position: relative; z-index: 2; font-family: 'Barlow Condensed', sans-serif; font-size: clamp(1rem, 2.5vw, 1.5rem); letter-spacing: 0.35em; text-transform: uppercase; color: var(--light); margin-top: 20px; animation: fadeUp 1s ease 0.6s both; }
+.hero-line { position: relative; z-index: 2; width: 80px; height: 3px; background: var(--red); margin-top: 28px; animation: expandLine 1s ease 0.8s both; }
+.hero-desc { position: relative; z-index: 2; max-width: 500px; font-size: 1rem; line-height: 1.75; color: var(--grey); margin-top: 22px; animation: fadeUp 1s ease 1s both; }
+.hero-scroll { position: absolute; bottom: 40px; right: 6vw; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--grey); animation: fadeIn 1.5s ease 1.5s both; }
+.scroll-line { width: 1px; height: 60px; background: linear-gradient(180deg, var(--red), transparent); animation: pulse 2s infinite; }
+
+/* TICKER */
+.ticker { background: var(--red); padding: 12px 0; overflow: hidden; white-space: nowrap; }
+.ticker-inner { display: inline-flex; animation: ticker 30s linear infinite; }
+.ticker-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white); padding: 0 40px; }
+.ticker-dot { color: rgba(255,255,255,0.4); padding: 0 10px; }
+
+/* SECTIONS */
+.section { padding: 120px 6vw; }
+.section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.5em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1; letter-spacing: 0.03em; margin-bottom: 40px; }
+.divider { width: 60px; height: 2px; background: var(--red); margin: 20px 0 40px; }
+
+/* ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.about-text p { font-size: 1.05rem; line-height: 1.85; color: var(--light); margin-bottom: 20px; }
+.about-text p strong { color: var(--white); font-weight: 600; }
+.about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.stat-box { background: var(--dark2); border: 1px solid var(--border); padding: 40px 30px; position: relative; overflow: hidden; transition: border-color 0.3s; }
+.stat-box:hover { border-color: var(--red); }
+.stat-box::before { content:''; position:absolute; top:0; left:0; width:3px; height:0; background:var(--red); transition:height 0.4s; }
+.stat-box:hover::before { height:100%; }
+.stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--red); line-height: 1; display: block; }
+.stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--grey); margin-top: 8px; display: block; }
+
+/* SERVICES */
+.services { background: var(--dark2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.services-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 600px; }
+.services-left { padding: 100px 8vw 100px 6vw; border-right: 1px solid var(--border); }
+.services-right { padding: 100px 6vw 100px 8vw; display: flex; flex-direction: column; justify-content: center; }
+.contact-highlight { background: var(--dark3); border-left: 3px solid var(--red); padding: 24px 28px; margin-top: 30px; }
+.contact-highlight p { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; line-height: 1.6; color: var(--light); }
+.contact-highlight p strong { color: var(--white); }
+.feature-list { list-style: none; display: flex; flex-direction: column; margin-top: 40px; }
+.feature-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.feature-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--red); min-width: 30px; line-height: 1.2; }
+.feature-text { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; line-height: 1.5; color: var(--light); }
+.feature-text strong { display: block; color: var(--white); font-weight: 600; font-size: 1.1rem; margin-bottom: 4px; }
+
+/* ESCLUSIVE */
+.excl-hero { display: grid; grid-template-columns: auto 1fr; border: 1px solid var(--border); background: var(--dark2); margin-bottom: 2px; position: relative; overflow: hidden; transition: border-color 0.3s; cursor: pointer; }
+.excl-hero:hover { border-color: var(--red); }
+.excl-hero-badge { background: var(--red); display: flex; align-items: center; justify-content: center; padding: 0 28px; writing-mode: vertical-rl; }
+.excl-stamp { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.3em; color: var(--white); white-space: nowrap; }
+.excl-stamp-small { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white); background: var(--red); padding: 3px 10px; }
+.excl-hero-content { padding: 48px 52px; }
+.excl-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 16px; }
+.excl-tag-small { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); }
+.excl-hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.05; color: var(--white); margin-bottom: 20px; }
+.excl-hero-excerpt { font-size: 1rem; line-height: 1.75; color: var(--light); margin-bottom: 28px; max-width: 680px; }
+.excl-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.excl-date, .excl-author, .excl-read { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--grey); }
+.excl-dot { color: var(--red); }
+.excl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-bottom: 2px; }
+.excl-card { background: var(--dark2); border: 1px solid var(--border); padding: 32px; display: flex; flex-direction: column; gap: 14px; min-height: 280px; position: relative; transition: border-color 0.3s, background 0.3s; cursor: pointer; overflow: hidden; }
+.excl-card:hover { border-color: var(--red); background: var(--dark3); }
+.excl-card::before { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--red); transition:width 0.4s; }
+.excl-card:hover::before { width:100%; }
+.excl-card-cta { background: var(--dark3); cursor: default; display:flex; align-items:center; justify-content:center; }
+.excl-card-cta:hover { border-color: var(--red); }
+.excl-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.excl-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem; font-weight: 700; line-height: 1.3; color: var(--white); }
+.excl-card-excerpt { font-size: 0.88rem; line-height: 1.65; color: var(--grey); flex-grow: 1; }
+.excl-card-arrow { position: absolute; top: 28px; right: 28px; width: 32px; height: 32px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--grey); font-size: 0.9rem; transition: all 0.3s; }
+.excl-card:hover .excl-card-arrow { background: var(--red); border-color: var(--red); color: var(--white); }
+.excl-counter-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--red); margin-top: 2px; }
+.excl-counter { padding: 36px 40px; text-align: center; }
+.excl-counter-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--white); display: block; line-height: 1; }
+.excl-counter-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-top: 6px; display: block; }
+
+/* CONTACT */
+.contact { background: var(--dark2); border-top: 1px solid var(--border); }
+.contact-inner { display: grid; grid-template-columns: 1fr 1fr; }
+.contact-left { padding: 100px 8vw 100px 6vw; border-right: 1px solid var(--border); }
+.contact-right { padding: 100px 6vw 100px 8vw; }
+.contact-intro { font-size: 1.05rem; line-height: 1.8; color: var(--grey); margin-bottom: 20px; margin-top: 20px; }
+.contact-intro strong { color: var(--white); }
+.tab-bar { display: flex; gap: 2px; margin-bottom: 30px; }
+.tab-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; background: var(--dark3); border: 1px solid var(--border); color: var(--grey); padding: 12px 22px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
+.tab-btn.active { background: var(--red); border-color: var(--red); color: var(--white); }
+.tab-btn:hover:not(.active) { border-color: var(--grey); color: var(--white); }
+.tab-badge { background: var(--white); color: var(--black); font-size: 0.6rem; letter-spacing: 0.15em; padding: 2px 7px; font-weight: 700; }
+.tab-btn.active .tab-badge { background: rgba(255,255,255,0.25); color: var(--white); }
+.register-intro { background: var(--dark3); border-left: 3px solid var(--red); padding: 18px 22px; margin-bottom: 20px; }
+.register-intro p { font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; line-height: 1.6; color: var(--light); }
+.register-intro p strong { color: var(--white); }
+.form-group { display: flex; flex-direction: column; gap: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-field { display: flex; flex-direction: column; gap: 8px; }
+.form-field label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--grey); }
+.form-field input, .form-field textarea, .form-field select { background: var(--dark3); border: 1px solid var(--border); color: var(--white); padding: 14px 18px; font-family: 'Barlow', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.3s; resize: none; -webkit-appearance: none; }
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--red); }
+.form-field select option { background: var(--dark3); }
+.form-field textarea { height: 140px; }
+.btn-submit { background: var(--red); color: var(--white); border: none; padding: 18px 40px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; align-self: flex-start; margin-top: 8px; }
+.btn-submit:hover { background: #c00008; }
+
+/* FOOTER */
+footer { background: #050505; border-top: 1px solid var(--border); padding: 60px 6vw 40px; }
+.footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; padding-bottom: 60px; border-bottom: 1px solid var(--border); }
+.footer-brand { display: flex; align-items: center; gap: 16px; }
+.footer-brand img { width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 2px solid var(--red); }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 0.2em; color: var(--white); line-height: 1; }
+.footer-logo span { color: var(--red); }
+.footer-tagline { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--grey); margin-top: 6px; }
+.footer-nav { display: flex; gap: 60px; }
+.footer-col h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--red); margin-bottom: 20px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul a { font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; color: var(--grey); text-decoration: none; letter-spacing: 0.05em; transition: color 0.3s; }
+.footer-col ul a:hover { color: var(--white); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.1em; color: var(--grey); }
+.footer-bottom span { color: var(--red); }
+
+/* ARTICLE MODAL */
+.art-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 500; overflow-y: auto; backdrop-filter: blur(6px); }
+.art-overlay.open { display: block; }
+.art-modal { max-width: 820px; margin: 0 auto; min-height: 100vh; background: var(--black); position: relative; }
+.art-close-bar { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 16px 6vw; background: rgba(0,0,0,0.97); border-bottom: 1px solid var(--border); }
+.art-close-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.2em; color: var(--white); display: flex; align-items: center; gap: 10px; }
+.art-close-logo img { width: 32px; height: 32px; object-fit: cover; border-radius: 50%; border: 2px solid var(--red); }
+.art-close-logo span { color: var(--red); }
+.art-close-btn { background: none; border: 1px solid var(--border); color: var(--grey); padding: 8px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.art-close-btn:hover { border-color: var(--red); color: var(--red); }
+.art-hero { padding: 60px 6vw 50px; border-bottom: 1px solid var(--border); background: repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(232,0,10,0.03) 80px, rgba(232,0,10,0.03) 81px); }
+.art-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.art-badge { background: var(--red); color: var(--white); font-family: 'Bebas Neue', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; padding: 3px 10px; }
+.art-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1; margin-bottom: 20px; }
+.art-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.art-meta-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--grey); }
+.art-meta-dot { color: var(--red); }
+.art-body { padding: 60px 6vw; }
+.art-excerpt { font-family: 'Barlow Condensed', sans-serif; font-size: 1.25rem; line-height: 1.6; color: var(--light); margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+.art-text p { font-size: 1.05rem; line-height: 1.9; color: var(--light); margin-bottom: 24px; }
+.art-text p strong { color: var(--white); font-weight: 600; }
+.art-chapter { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--red); margin: 36px 0 12px; display: block; }
+.art-highlight { background: var(--dark2); border-left: 3px solid var(--red); padding: 18px 22px; margin: 24px 0; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; line-height: 1.6; color: var(--light); font-style: italic; }
+.art-cta { margin: 0 6vw 60px; background: var(--dark2); border: 1px solid var(--border); border-left: 3px solid var(--red); padding: 28px 32px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.art-cta p { font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; line-height: 1.6; color: var(--light); }
+.art-cta p strong { color: var(--white); }
+.art-cta-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white); background: var(--red); padding: 12px 24px; border: none; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+.art-cta-btn:hover { background: #c00008; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
+@keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+@keyframes expandLine { from{width:0;}to{width:80px;} }
+@keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+@keyframes ticker { from{transform:translateX(0);}to{transform:translateX(-50%);} }
+
+/* MOBILE */
+@media(max-width:768px){
+.nav-links,.nav-cta{display:none;}
+.about-grid{grid-template-columns:1fr;gap:40px;}
+.services-inner{grid-template-columns:1fr;}
+.services-left{border-right:none;border-bottom:1px solid var(--border);padding:60px 6vw;}
+.services-right{padding:60px 6vw;}
+.contact-inner{grid-template-columns:1fr;}
+.contact-left{border-right:none;border-bottom:1px solid var(--border);padding:60px 6vw;}
+.contact-right{padding:60px 6vw;}
+.footer-top{flex-direction:column;gap:40px;}
+.footer-nav{flex-direction:column;gap:40px;}
+.form-row{grid-template-columns:1fr;}
+.footer-bottom{flex-direction:column;gap:12px;text-align:center;}
+.excl-grid{grid-template-columns:1fr;}
+.excl-hero{grid-template-columns:1fr;}
+.excl-hero-badge{writing-mode:horizontal-tb;padding:16px 24px;}
+.excl-hero-content{padding:32px 24px;}
+.excl-counter-bar{grid-template-columns:1fr 1fr;}
+.about-stats{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="data:image/jpeg;base64,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" alt="Raven Logo">
+    RAVEN<span>.</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Chi Siamo</a></li>
+    <li><a href="#services">Servizi</a></li>
+    <li><a href="#esclusive">Esclusive</a></li>
+    <li><a href="#contact">Contatti</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Invia Notizia</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-bg"></div>
+  <div class="hero-deco"><img src="data:image/jpeg;base64,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" alt=""></div>
+  <div class="hero-tag">// L'agenzia che vola più in alto di tutti</div>
+  <h1 class="hero-title">
+    <span class="accent">Agenzia di Notizie</span>
+    RAVEN
+  </h1>
+  <div class="hero-subtitle">Gossip · Cronaca · Esclusiva · Spettacolo</div>
+  <div class="hero-line"></div>
+  <p class="hero-desc">Notizie prima di tutti. Gossip senza filtri. Storie che nessun altro ha il coraggio di raccontare. Benvenuto nell'agenzia che vede tutto, sente tutto, pubblica tutto.</p>
+  <div class="hero-scroll"><div class="scroll-line"></div>SCROLL</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">RAVEN AGENCY</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">GOSSIP IN ESCLUSIVA</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">NOTIZIE SENZA FILTRI</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">BREAKING NEWS 24/7</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">LA VERITÀ PRIMA DI TUTTI</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">SCOOP ESCLUSIVI</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">RAVEN AGENCY</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">GOSSIP IN ESCLUSIVA</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">NOTIZIE SENZA FILTRI</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">BREAKING NEWS 24/7</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">LA VERITÀ PRIMA DI TUTTI</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">SCOOP ESCLUSIVI</span><span class="ticker-dot">◆</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-label">// Chi Siamo</div>
+  <h2 class="section-title">UN'AGENZIA.<br>NESSUN LIMITE.</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p><strong>RAVEN</strong> non è una normale agenzia di stampa. È una macchina da guerra dell'informazione: veloce, precisa, senza paura. Nata per portare alla luce quello che altri preferirebbero tenere nell'ombra.</p>
+      <p>In un panorama mediatico pieno di timidezza e autocensura, <strong>Raven rompe le regole</strong>. Gossip VIP, retroscena politici, scandali di potere, storie di cronaca che fanno discutere. Ogni notizia è verificata, ogni scoop è esclusivo, ogni storia è raccontata fino in fondo.</p>
+      <p>La nostra forza è la <strong>rete di fonti</strong>: giornalisti sul campo, insider nei palazzi del potere, contatti nel mondo dello spettacolo e della politica. Se è successo, Raven lo sa. E lo pubblica.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-box"><span class="stat-number">100%</span><span class="stat-label">Notizie Verificate</span></div>
+      <div class="stat-box"><span class="stat-number">0</span><span class="stat-label">Filtri o Censure</span></div>
+      <div class="stat-box"><span class="stat-number">24/7</span><span class="stat-label">Sempre Online</span></div>
+      <div class="stat-box"><span class="stat-number">1°</span><span class="stat-label">A Rompere gli Scoop</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-left">
+      <div class="section-label">// Come Operiamo</div>
+      <h2 class="section-title">IL METODO<br>RAVEN</h2>
+      <p style="font-size:1.05rem;line-height:1.8;color:var(--grey);margin-bottom:20px;">Il corvo vede tutto dall'alto. Si muove nell'ombra. Arriva prima degli altri. È esattamente così che lavora Raven: con intelligenza, velocità e un network che nessuna altra agenzia può permettersi.</p>
+      <p style="font-size:1.05rem;line-height:1.8;color:var(--grey);"><strong style="color:var(--white)">Raven non lascia nulla di intentato</strong>. Ogni storia merita di essere raccontata. Ogni verità ha il diritto di venire a galla.</p>
+      <div class="contact-highlight" style="margin-top:40px;">
+        <p><strong>Non censuriamo. Non edulcoriamo. Non abbiamo padroni.</strong><br><br>Raven è indipendente. Le nostre notizie non si comprano e non si vendono. L'unica cosa che conta è la verità.</p>
+      </div>
+    </div>
+    <div class="services-right">
+      <ul class="feature-list">
+        <li class="feature-item"><span class="feature-num">01</span><div class="feature-text"><strong>Gossip VIP & Spettacolo</strong>Relazioni, tradimenti, rotture e retroscena. Le storie che tutti vogliono leggere.</div></li>
+        <li class="feature-item"><span class="feature-num">02</span><div class="feature-text"><strong>Cronaca & Inchieste</strong>Fatti di cronaca, indagini, scandali. Raccontiamo quello che i grandi media ignorano.</div></li>
+        <li class="feature-item"><span class="feature-num">03</span><div class="feature-text"><strong>Politica & Potere</strong>Retroscena dai palazzi del potere, accordi segreti, tradimenti politici.</div></li>
+        <li class="feature-item"><span class="feature-num">04</span><div class="feature-text"><strong>Breaking News Istantaneo</strong>Quando una notizia esplode, Raven è già lì. 24 ore su 24, 7 giorni su 7.</div></li>
+        <li class="feature-item" style="border-bottom:none;"><span class="feature-num">05</span><div class="feature-text"><strong>Fonti Protette & Anonimato</strong>Chi ci dà notizie è al sicuro. Ogni fonte è protetta con la massima riservatezza.</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ESCLUSIVE -->
+<section class="section" id="esclusive" style="padding-bottom:0;">
+  <div class="section-label">// Solo da Noi</div>
+  <h2 class="section-title">ESCLUSIVE<br><span style="color:var(--red);">RAVEN</span></h2>
+  <p style="font-size:1.05rem;line-height:1.8;color:var(--grey);max-width:600px;margin-bottom:70px;">Notizie scoperte, investigate e pubblicate <strong style="color:var(--white)">unicamente dal team Raven</strong>. Non le troverai da nessun'altra parte.</p>
+
+  <!-- Articoli fissi -->
+  <div class="excl-hero" onclick="openArticle('leo')">
+    <div class="excl-hero-badge"><span class="excl-stamp">RAVEN ORIGINAL</span></div>
+    <div class="excl-hero-content">
+      <span class="excl-tag">◆ Esclusiva Raven · Gossip</span>
+      <h3 class="excl-hero-title">Leo, Sara e Giada: Il Triangolo che Nessuno Si Aspettava</h3>
+      <p class="excl-hero-excerpt">Leo, Sara e Giada: un triangolo che nessuno si aspettava. La storia malinconica postata venerdì sera ha scatenato una reazione a catena. Solo Raven ha ricostruito tutto.</p>
+      <div class="excl-meta">
+        <span class="excl-date">Febbraio 2026</span><span class="excl-dot">·</span>
+        <span class="excl-author">Redazione Raven</span><span class="excl-dot">·</span>
+        <span class="excl-read">3 min di lettura</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="excl-grid">
+    <div class="excl-card" onclick="openArticle('smalto')">
+      <div class="excl-card-top"><span class="excl-stamp-small">RAVEN ORIGINAL</span><span class="excl-tag-small">Gossip</span></div>
+      <h4 class="excl-card-title">Lo Smalto nel Bicchiere e la Notte del Bordeaux</h4>
+      <p class="excl-card-excerpt">Pietro, Elena, Chiara e lo smalto rosso. Marco, Alice e i messaggi archiviati alle tre di notte. Due storie, una serata, un disastro.</p>
+      <div class="excl-meta" style="margin-top:auto;"><span class="excl-date">Febbraio 2026</span><span class="excl-dot">·</span><span class="excl-read">4 min</span></div>
+      <div class="excl-card-arrow">→</div>
+    </div>
+    <div class="excl-card excl-card-cta" style="grid-column:span 2;">
+      <div style="margin:auto;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:16px;opacity:0.3;">🪶</div>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;letter-spacing:0.15em;color:var(--grey);margin-bottom:24px;line-height:1.6;">Nuovi scoop ogni settimana.<br>Solo da Raven. Solo in esclusiva.</p>
+        <button class="btn-submit" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Hai uno scoop? Mandacelo →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Articoli pubblicati da admin (dinamici) -->
+  <div id="published-articles-container"></div>
+
+  <div class="excl-counter-bar">
+    <div class="excl-counter"><span class="excl-counter-num">2</span><span class="excl-counter-label">Esclusive Pubblicate</span></div>
+    <div class="excl-counter"><span class="excl-counter-num">100%</span><span class="excl-counter-label">Notizie Originali Raven</span></div>
+    <div class="excl-counter"><span class="excl-counter-num">0</span><span class="excl-counter-label">Riprese da Altri Media</span></div>
+    <div class="excl-counter"><span class="excl-counter-num">2</span><span class="excl-counter-label">Scoop del Mese</span></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div class="section-label">// Contatti</div>
+      <h2 class="section-title">HAI UNA<br>NOTIZIA?</h2>
+      <div class="divider"></div>
+      <p class="contact-intro">Raven è sempre alla ricerca di <strong>notizie, segnalazioni, scoop e informazioni</strong> che meritano di essere portati alla luce.</p>
+      <p class="contact-intro">Ogni segnalazione viene trattata con la massima <strong>riservatezza e professionalità</strong>. Le fonti vengono sempre protette.</p>
+      <div class="contact-highlight">
+        <p><strong>Vuoi restare anonimo? Nessun problema.</strong><br><br>Gestiamo ogni informazione con la massima discrezione. Il tuo nome non verrà mai rivelato senza il tuo consenso.</p>
+      </div>
+    </div>
+    <div class="contact-right">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('send')">Invia Notizia</button>
+        <button class="tab-btn" onclick="switchTab('register')">Registrati <span class="tab-badge">Vantaggi Esclusivi</span></button>
+      </div>
+
+      <div id="tab-send">
+        <form class="form-group" id="segnalazione-form" onsubmit="handleSubmit(event)">
+          <div class="form-field"><label>Nome (opzionale)</label><input type="text" name="nome" placeholder="Il tuo nome"></div>
+          <div class="form-field">
+            <label>Categoria</label>
+            <select name="categoria" required>
+              <option value="">Seleziona categoria</option>
+              <option>Gossip VIP</option><option>Cronaca</option><option>Politica & Potere</option>
+              <option>Spettacolo & Televisione</option><option>Sport</option><option>Esclusiva / Scoop</option><option>Altro</option>
+            </select>
+          </div>
+          <div class="form-field"><label>La tua notizia</label><textarea name="notizia" placeholder="Raccontaci cosa sai..." required></textarea></div>
+          <div class="form-field">
+            <label>Riservatezza</label>
+            <select name="riservatezza">
+              <option>Massima riservatezza — anonimato garantito</option>
+              <option>Riservatezza standard</option>
+              <option>Posso essere citato/a come fonte</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit" id="send-btn">Invia a Raven →</button>
+        </form>
+        <div id="success-msg" style="display:none;margin-top:20px;padding:20px 24px;background:var(--dark3);border-left:3px solid var(--green);font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;letter-spacing:0.1em;color:var(--green);">✓ SEGNALAZIONE RICEVUTA — Il team Raven la esaminerà al più presto.</div>
+        <div id="error-msg" style="display:none;margin-top:20px;padding:20px 24px;background:var(--dark3);border-left:3px solid var(--red);font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;letter-spacing:0.1em;color:var(--red);"></div>
+      </div>
+
+      <div id="tab-register" style="display:none;">
+        <div class="register-intro"><p>Registrandoti alla rete Raven avrai accesso a <strong>vantaggi esclusivi</strong> riservati ai membri. Completamente gratuito.</p></div>
+        <form class="form-group" onsubmit="handleRegister(event)">
+          <div class="form-row">
+            <div class="form-field"><label>Nome</label><input type="text" placeholder="Il tuo nome" required></div>
+            <div class="form-field"><label>Cognome</label><input type="text" placeholder="Il tuo cognome" required></div>
+          </div>
+          <div class="form-field"><label>Email</label><input type="email" placeholder="La tua email" required></div>
+          <div class="form-field"><label>Password</label><input type="password" placeholder="Scegli una password"></div>
+          <div class="form-field"><label>Conferma Password</label><input type="password" placeholder="Ripeti la password"></div>
+          <div class="form-field" style="flex-direction:row;align-items:flex-start;gap:12px;">
+            <input type="checkbox" id="privacy" style="width:16px;height:16px;min-width:16px;margin-top:3px;accent-color:var(--red);" required>
+            <label for="privacy" style="font-size:0.8rem;line-height:1.5;letter-spacing:0.05em;text-transform:none;color:var(--grey);">Accetto la <a href="#" style="color:var(--red);text-decoration:none;">Privacy Policy</a> e i <a href="#" style="color:var(--red);text-decoration:none;">Termini di Utilizzo</a></label>
+          </div>
+          <button type="submit" class="btn-submit">Entra nella Rete Raven →</button>
+        </form>
+        <div id="register-msg" style="display:none;margin-top:20px;padding:20px 24px;background:var(--dark3);border-left:3px solid var(--green);font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;letter-spacing:0.1em;color:var(--green);">✓ REGISTRAZIONE COMPLETATA — Benvenuto nella rete Raven.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">
+        <img src="data:image/jpeg;base64,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" alt="Raven Logo" style="width:56px;height:56px;object-fit:cover;border-radius:50%;border:2px solid var(--red);">
+        <div><div class="footer-logo">RAVEN<span>.</span></div><div class="footer-tagline">Agenzia di Notizie & Gossip — La Verità Prima di Tutti</div></div>
+      </div>
+    </div>
+    <div class="footer-nav">
+      <div class="footer-col"><h4>Sezioni</h4><ul><li><a href="#about">Chi Siamo</a></li><li><a href="#services">Servizi</a></li><li><a href="#esclusive">Esclusive</a></li><li><a href="#contact">Contatti</a></li></ul></div>
+      <div class="footer-col"><h4>Seguici</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Telegram</a></li><li><a href="#">X / Twitter</a></li><li><a href="#">TikTok</a></li></ul></div>
+      <div class="footer-col"><h4>Info</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Cookie Policy</a></li><li><a href="#">Redazione</a></li></ul></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Raven Agency. Tutti i diritti riservati.</p>
+    <p>Nessuna notizia è troppo grande <span>◆</span> Nessuna verità è troppo scomoda</p>
+  </div>
+  <div style="text-align:center;padding:16px 0;">
+    <button onclick="openAdminPanel()" style="background:none;border:none;color:#222;font-size:0.6rem;cursor:pointer;letter-spacing:0.1em;">⬛</button>
+  </div>
+</footer>
+
+<!-- MODAL: Leo Sara Giada -->
+<div class="art-overlay" id="art-leo">
+  <div class="art-modal">
+    <div class="art-close-bar">
+      <div class="art-close-logo"><img src="data:image/jpeg;base64,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" alt="" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:2px solid var(--red);">RAVEN<span>.</span></div>
+      <button class="art-close-btn" onclick="closeArticle('leo')">← Chiudi</button>
+    </div>
+    <div class="art-hero">
+      <div class="art-label"><span class="art-badge">RAVEN ORIGINAL</span> Esclusiva Raven · Gossip</div>
+      <h1 class="art-title">Leo, Sara e Giada:<br>Il Triangolo che Nessuno Si Aspettava</h1>
+      <div class="art-meta">
+        <span class="art-meta-item">Febbraio 2026</span><span class="art-meta-dot">◆</span>
+        <span class="art-meta-item">Redazione Raven</span><span class="art-meta-dot">◆</span>
+        <span class="art-meta-item">3 min di lettura</span>
+      </div>
+    </div>
+    <div class="art-body">
+      <p class="art-excerpt">Leo, Sara e Giada: un triangolo che nessuno si aspettava. La storia malinconica postata venerdì sera ha scatenato una reazione a catena. Solo Raven ha ricostruito tutto.</p>
+      <div class="art-text">
+        <p>Tutto è iniziato <strong>venerdì sera</strong>. Leo ha postato una storia con una canzone super malinconica, di quelle che metti solo se vuoi far capire a qualcuno che sei "sottone". Quel qualcuno è <strong>Sara</strong>. Il problema? Sara non ha visualizzato perché era troppo impegnata a commentare con emoji a cuore il nuovo post di <strong>misterioso ragazzo della classe accanto</strong>.</p>
+        <div class="art-highlight">"Una canzone del genere non si mette per caso. Leo voleva che Sara capisse. Ma Sara stava guardando da un'altra parte."</div>
+        <p>Ma il vero colpo di scena è arrivato <strong>sabato</strong>. Giada, la migliore amica di Sara, è stata vista al parco a parlare per ore proprio con Leo. Qualcuno dice che stessero complottando, altri dicono che tra i due sia <strong>scattata una scintilla inaspettata</strong> mentre cercavano di capire perché Sara fosse così distratta.</p>
+        <p>La situazione è fluida. I protagonisti non hanno voluto commentare. Ma le fonti sono chiare: questo triangolo è appena cominciato, e <strong>Raven seguirà ogni sviluppo</strong>.</p>
+      </div>
+    </div>
+    <div class="art-cta">
+      <p><strong>Sai qualcosa in più?</strong><br>Contattaci in forma anonima se vuoi.</p>
+      <button class="art-cta-btn" onclick="closeArticle('leo');document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Invia a Raven →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Smalto -->
+<div class="art-overlay" id="art-smalto">
+  <div class="art-modal">
+    <div class="art-close-bar">
+      <div class="art-close-logo"><img src="data:image/jpeg;base64,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" alt="" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:2px solid var(--red);">RAVEN<span>.</span></div>
+      <button class="art-close-btn" onclick="closeArticle('smalto')">← Chiudi</button>
+    </div>
+    <div class="art-hero">
+      <div class="art-label"><span class="art-badge">RAVEN ORIGINAL</span> Esclusiva Raven · Gossip</div>
+      <h1 class="art-title">Lo Smalto nel Bicchiere<br>e la Notte del Bordeaux</h1>
+      <div class="art-meta">
+        <span class="art-meta-item">Febbraio 2026</span><span class="art-meta-dot">◆</span>
+        <span class="art-meta-item">Redazione Raven</span><span class="art-meta-dot">◆</span>
+        <span class="art-meta-item">4 min di lettura</span>
+      </div>
+    </div>
+    <div class="art-body">
+      <p class="art-excerpt">Pietro, Elena, Chiara e lo smalto rosso. Marco, Alice e i messaggi archiviati alle tre di notte. Due storie, una serata, un disastro.</p>
+      <div class="art-text">
+        <span class="art-chapter">// Parte 1 — Lo Smalto nel Bicchiere</span>
+        <p>Tutti pensavano che <strong>Pietro e Elena</strong> fossero la coppia blindata: due anni insieme, foto coordinate e vacanze con le famiglie. Ma <strong>martedì sera</strong> è successo il disastro. Pietro ha postato una foto a una cena scrivendo "serata tranquilla". Il problema? Nel riflesso del bicchiere si vedeva chiaramente uno <strong>smalto rosso</strong> che Elena non mette mai.</p>
+        <div class="art-highlight">Il dettaglio scottante: lo smalto era esattamente della stessa tonalità di quello che <strong>Chiara</strong> — sì, proprio la nemica giurata di Elena — ha sfoggiato nell'ultimo Reel.</div>
+        <p>La reazione di Elena è stata immediata: ha rimosso il tag da <strong>tutte le foto con lui in meno di tre minuti</strong>. Record mondiale.</p>
+        <span class="art-chapter">// Parte 2 — Il Gioco del "Non l'Ho Mai Fatto"</span>
+        <p>La situazione è precipitata durante una <strong>videochiamata di gruppo</strong>. Qualcuno ha chiesto chi avesse mai mandato messaggi "teneri" a un ex mentre era fidanzato. <strong>Marco</strong>, che sta con Alice da sei mesi, è diventato bordeaux. Alice ha notato il cambio di colore e ha iniziato l'interrogatorio in diretta. Marco aveva ancora una conversazione archiviata — ma non cancellata — con la sua ex storica.</p>
+        <div class="art-highlight">"Era solo per farle gli auguri!" ha detto lui.<br>"Alle tre di notte?" ha risposto lei, prima di chiudere la chiamata.</div>
+        <p>La situazione è ancora in evoluzione. <strong>Raven seguirà ogni sviluppo</strong>.</p>
+      </div>
+    </div>
+    <div class="art-cta">
+      <p><strong>Sai qualcosa in più?</strong><br>Conosci altri dettagli? Scrivici anche in forma anonima.</p>
+      <button class="art-cta-btn" onclick="closeArticle('smalto');document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Invia a Raven →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLISHED ARTICLE MODAL -->
+<div class="art-overlay" id="published-modal">
+  <div class="art-modal">
+    <div class="art-close-bar">
+      <div class="art-close-logo">RAVEN<span style="color:var(--red);">.</span></div>
+      <button class="art-close-btn" onclick="closePublishedArticle()">← Chiudi</button>
+    </div>
+    <div class="art-hero">
+      <div class="art-label"><span class="art-badge">RAVEN SCOOP</span> <span id="pub-modal-tag"></span></div>
+      <h1 class="art-title" id="pub-modal-title"></h1>
+      <div class="art-meta">
+        <span class="art-meta-item" id="pub-modal-data"></span>
+        <span class="art-meta-dot">◆</span>
+        <span class="art-meta-item">Redazione Raven</span>
+      </div>
+    </div>
+    <div class="art-body">
+      <p class="art-excerpt" id="pub-modal-body" style="white-space:pre-wrap;"></p>
+    </div>
+    <div class="art-cta">
+      <p><strong>Sai qualcosa in più?</strong><br>Contattaci in forma anonima.</p>
+      <button class="art-cta-btn" onclick="closePublishedArticle();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Invia a Raven →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div id="admin-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:#000;overflow-y:auto;">
+
+  <!-- LOGIN -->
+  <div id="admin-login-screen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#000;background-image:repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(232,0,10,0.03) 80px,rgba(232,0,10,0.03) 81px);">
+    <div style="width:100%;max-width:420px;padding:0 24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.2em;margin-bottom:8px;">RAVEN<span style="color:var(--red);">.</span></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.5em;text-transform:uppercase;color:var(--red);margin-bottom:12px;">// Accesso Riservato</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:0.05em;margin-bottom:40px;line-height:1;">PANNELLO<br>ADMIN</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+        <label style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);">Password</label>
+        <input type="password" id="admin-pwd" placeholder="Inserisci la password" onkeydown="if(event.key==='Enter')doLogin()" style="background:var(--dark2);border:1px solid var(--border);color:var(--white);padding:16px 18px;font-family:'Barlow',sans-serif;font-size:1rem;outline:none;width:100%;">
+      </div>
+      <button onclick="doLogin()" style="width:100%;background:var(--red);color:var(--white);border:none;padding:18px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;letter-spacing:0.3em;text-transform:uppercase;cursor:pointer;">Accedi →</button>
+      <div id="admin-login-error" style="display:none;margin-top:14px;padding:14px 18px;background:var(--dark2);border-left:3px solid var(--red);font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;color:var(--red);">✗ Password errata.</div>
+      <button onclick="closeAdmin()" style="margin-top:20px;background:none;border:none;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey);cursor:pointer;">← Torna al sito</button>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div id="admin-panel-inner" style="display:none;">
+    <div style="position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 6vw;background:rgba(0,0,0,0.97);border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.2em;">RAVEN<span style="color:var(--red);">.</span></div>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.3em;background:var(--red);padding:3px 12px;color:var(--white);text-transform:uppercase;">Admin</span>
+      </div>
+      <button onclick="closeAdmin()" style="background:none;border:1px solid var(--border);color:var(--grey);padding:8px 20px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;">← Torna al Sito</button>
+    </div>
+
+    <div style="padding:60px 6vw;">
+      <!-- STATS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:60px;">
+        <div style="background:var(--dark2);border:1px solid var(--border);padding:28px 32px;border-left:3px solid var(--red);"><span id="admin-stat-totale" style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--red);display:block;line-height:1;">0</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--grey);margin-top:6px;display:block;">Segnalazioni Totali</span></div>
+        <div style="background:var(--dark2);border:1px solid var(--border);padding:28px 32px;border-left:3px solid var(--red);"><span id="admin-stat-nuove" style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--red);display:block;line-height:1;">0</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--grey);margin-top:6px;display:block;">Non Lette</span></div>
+        <div style="background:var(--dark2);border:1px solid var(--border);padding:28px 32px;border-left:3px solid var(--red);"><span id="admin-stat-oggi" style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--red);display:block;line-height:1;">0</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--grey);margin-top:6px;display:block;">Oggi</span></div>
+        <div style="background:var(--dark2);border:1px solid var(--border);padding:28px 32px;border-left:3px solid var(--red);"><span id="admin-stat-cat" style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--red);display:block;line-height:1;">—</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--grey);margin-top:6px;display:block;">Cat. più frequente</span></div>
+      </div>
+
+      <!-- TABS -->
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:40px;">
+        <button class="admin-main-tab" onclick="adminShowTab('seg')" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;letter-spacing:0.2em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--red);color:var(--white);padding:14px 28px;cursor:pointer;margin-bottom:-1px;">Segnalazioni</button>
+        <button class="admin-main-tab" onclick="adminShowTab('mod')" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;letter-spacing:0.2em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--grey);padding:14px 28px;cursor:pointer;margin-bottom:-1px;">Moderazione</button>
+      </div>
+
+      <!-- TAB SEGNALAZIONI -->
+      <div id="admin-tab-seg">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:32px;">SEGNALAZIONI RICEVUTE</div>
+        <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
+          <button class="admin-filter-btn" onclick="adminFilterSeg('tutte',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;background:var(--red);border:1px solid var(--red);color:var(--white);padding:8px 18px;cursor:pointer;">Tutte</button>
+          <button class="admin-filter-btn" onclick="adminFilterSeg('non lette',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;background:var(--dark2);border:1px solid var(--border);color:var(--grey);padding:8px 18px;cursor:pointer;">Non lette</button>
+          <button class="admin-filter-btn" onclick="adminFilterSeg('Gossip VIP',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;background:var(--dark2);border:1px solid var(--border);color:var(--grey);padding:8px 18px;cursor:pointer;">Gossip</button>
+          <button class="admin-filter-btn" onclick="adminFilterSeg('Politica & Potere',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;background:var(--dark2);border:1px solid var(--border);color:var(--grey);padding:8px 18px;cursor:pointer;">Politica</button>
+          <button class="admin-filter-btn" onclick="adminFilterSeg('Cronaca',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;background:var(--dark2);border:1px solid var(--border);color:var(--grey);padding:8px 18px;cursor:pointer;">Cronaca</button>
+        </div>
+        <div style="display:grid;grid-template-columns:14px 1fr 130px 160px 90px;background:var(--dark3);border:1px solid var(--border);border-bottom:none;">
+          <div style="padding:12px 8px;"></div>
+          <div style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);border-right:1px solid var(--border);">Notizia / Mittente</div>
+          <div style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);border-right:1px solid var(--border);">Categoria</div>
+          <div style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);border-right:1px solid var(--border);">Data</div>
+          <div style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);">Azioni</div>
+        </div>
+        <div id="admin-seg-list"></div>
+      </div>
+
+      <!-- TAB MODERAZIONE -->
+      <div id="admin-tab-mod" style="display:none;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:16px;">MODERAZIONE STORIE</div>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;line-height:1.7;color:var(--grey);margin-bottom:32px;">Modifica o censura il testo prima di approvare. Solo le storie approvate vengono considerate per la pubblicazione.</p>
+        <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:32px;">
+          <button class="mod-tab-btn" onclick="filterMod('pending',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.2em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--red);color:var(--white);padding:12px 24px;cursor:pointer;margin-bottom:-1px;">In Attesa</button>
+          <button class="mod-tab-btn" onclick="filterMod('approved',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.2em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--grey);padding:12px 24px;cursor:pointer;margin-bottom:-1px;">Approvate</button>
+          <button class="mod-tab-btn" onclick="filterMod('rejected',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.2em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--grey);padding:12px 24px;cursor:pointer;margin-bottom:-1px;">Rifiutate</button>
+          <button class="mod-tab-btn" onclick="filterMod('all',this)" style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.2em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--grey);padding:12px 24px;cursor:pointer;margin-bottom:-1px;">Tutte</button>
+        </div>
+        <div id="mod-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEGNALAZIONE MODAL -->
+<div id="admin-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1100;align-items:center;justify-content:center;padding:40px 20px;backdrop-filter:blur(4px);" onclick="if(event.target===this)adminCloseModal()">
+  <div style="background:var(--dark2);border:1px solid var(--border);width:100%;max-width:700px;max-height:80vh;overflow-y:auto;">
+    <div style="padding:24px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:20px;position:sticky;top:0;background:var(--dark2);">
+      <div>
+        <span id="amod-tag" style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:6px;"></span>
+        <div id="amod-nome" style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.02em;"></div>
+      </div>
+      <button onclick="adminCloseModal()" style="background:none;border:1px solid var(--border);color:var(--grey);width:36px;height:36px;font-size:1.2rem;cursor:pointer;flex-shrink:0;">✕</button>
+    </div>
+    <div style="padding:24px 32px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div style="background:var(--dark3);border:1px solid var(--border);padding:14px 18px;"><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);display:block;margin-bottom:4px;">Data</span><span id="amod-data" style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;color:var(--white);"></span></div>
+        <div style="background:var(--dark3);border:1px solid var(--border);padding:14px 18px;"><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);display:block;margin-bottom:4px;">Riservatezza</span><span id="amod-riserv" style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;color:var(--white);"></span></div>
+      </div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:10px;">// Testo Segnalazione</span>
+      <p id="amod-notizia" style="font-size:1rem;line-height:1.8;color:var(--light);white-space:pre-wrap;"></p>
+    </div>
+    <div style="padding:16px 32px;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:flex-end;">
+      <button onclick="adminDeleteModal()" style="background:var(--red);border:none;color:var(--white);padding:10px 20px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "T9@vL3!qZ7#rP2x";
+
+// ===================== SUPABASE CONFIG =====================
+const SB_URL = "https://heienrzgfotwnvumkvbf.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlaWVucnpnZm90d252dW1rdmJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzA5MTIsImV4cCI6MjA4NzcwNjkxMn0.lrUQkRGBucmh4suBmsMf4OjTBMJip5A0jAE3DrDlDOU";
+
+async function sbFetch(path, options = {}) {
+  const { prefer, headers: extraHeaders, ...fetchOptions } = options;
+  const headers = {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json',
+  };
+  if (prefer) headers['Prefer'] = prefer;
+  if (extraHeaders) Object.assign(headers, extraHeaders);
+  const res = await fetch(SB_URL + '/rest/v1/' + path, {
+    ...fetchOptions,
+    headers
+  });
+  return res;
+}
+
+async function dbLoad() {
+  try {
+    const res = await sbFetch('segnalazioni?order=id.desc');
+    if (!res.ok) throw new Error('Supabase load error');
+    return await res.json();
+  } catch(e) {
+    console.warn('dbLoad fallback localStorage', e);
+    return JSON.parse(localStorage.getItem('raven_segnalazioni') || '[]');
+  }
+}
+
+async function dbSave(segnalazioni) {
+  // dbSave usato solo per update/delete — gestito da dbUpdate/dbDelete
+  localStorage.setItem('raven_segnalazioni', JSON.stringify(segnalazioni));
+}
+
+async function dbInsert(entry) {
+  const res = await sbFetch('segnalazioni', {
+    method: 'POST',
+    prefer: 'return=representation',
+    body: JSON.stringify({
+      nome: entry.nome,
+      categoria: entry.categoria,
+      notizia: entry.notizia,
+      riservatezza: entry.riservatezza,
+      letta: false
+    })
+  });
+  const text = await res.text();
+  console.log('Supabase response status:', res.status, 'body:', text);
+  if (!res.ok) {
+    let err;
+    try { err = JSON.parse(text); } catch { err = { message: text }; }
+    throw new Error('Status ' + res.status + ': ' + (err.message || err.error || text));
+  }
+  return text ? JSON.parse(text) : {};
+}
+
+async function dbMarkRead(id) {
+  await sbFetch('segnalazioni?id=eq.' + id, {
+    method: 'PATCH',
+    body: JSON.stringify({ letta: true })
+  });
+}
+
+async function dbDelete(id) {
+  await sbFetch('segnalazioni?id=eq.' + id, { method: 'DELETE' });
+}
+
+async function dbLoadPublished() {
+  try {
+    const res = await sbFetch('segnalazioni?pubblicata=eq.true&order=id.desc');
+    if (!res.ok) throw new Error();
+    return await res.json();
+  } catch { return []; }
+}
+
+async function dbPublish(id, testoModificato) {
+  await sbFetch('segnalazioni?id=eq.' + id, {
+    method: 'PATCH',
+    body: JSON.stringify({ pubblicata: true, notizia: testoModificato })
+  });
+}
+
+async function dbUnpublish(id) {
+  await sbFetch('segnalazioni?id=eq.' + id, {
+    method: 'PATCH',
+    body: JSON.stringify({ pubblicata: false })
+  });
+}
+
+// ===================== ARTICLE MODALS =====================
+function openArticle(id) {
+  document.getElementById('art-' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('art-' + id).scrollTop = 0;
+}
+function closeArticle(id) {
+  document.getElementById('art-' + id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.art-overlay').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+});
+
+// ===================== TABS =====================
+function switchTab(tab) {
+  document.getElementById('tab-send').style.display = tab === 'send' ? 'block' : 'none';
+  document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', (tab === 'send' && i === 0) || (tab === 'register' && i === 1));
+  });
+}
+
+// ===================== FORM SUBMIT =====================
+async function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('send-btn');
+  const successMsg = document.getElementById('success-msg');
+  const errorMsg = document.getElementById('error-msg');
+  successMsg.style.display = 'none';
+  errorMsg.style.display = 'none';
+  btn.textContent = 'Invio in corso...'; btn.disabled = true;
+
+  const entry = {
+    id: Date.now(),
+    data: new Date().toLocaleString('it-IT'),
+    nome: form.nome.value.trim() || 'Anonimo',
+    categoria: form.categoria.value,
+    notizia: form.notizia.value,
+    riservatezza: form.riservatezza.value,
+    letta: false
+  };
+
+  try {
+    // Invia a Netlify Forms
+    const formData = new FormData();
+    formData.append('form-name', 'segnalazioni');
+    formData.append('nome', entry.nome);
+    formData.append('categoria', entry.categoria);
+    formData.append('notizia', entry.notizia);
+    formData.append('riservatezza', entry.riservatezza);
+
+    // Salva sempre in localStorage (funziona ovunque)
+    const segnalazioni = JSON.parse(localStorage.getItem('raven_segnalazioni') || '[]');
+    segnalazioni.unshift(entry);
+    localStorage.setItem('raven_segnalazioni', JSON.stringify(segnalazioni));
+
+    // Invia a Netlify Forms solo se siamo su Netlify (non in locale)
+    const isNetlify = window.location.hostname !== 'localhost' && window.location.protocol !== 'file:';
+    if (isNetlify) {
+      await fetch('/', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString()
+      });
+    }
+
+    successMsg.style.display = 'block';
+    form.reset();
+    setTimeout(() => { successMsg.style.display = 'none'; }, 6000);
+  } catch(err) {
+    errorMsg.textContent = '✗ ERRORE — ' + (err.message || 'Riprova più tardi.');
+    errorMsg.style.display = 'block';
+  }
+
+  btn.textContent = 'Invia a Raven →'; btn.disabled = false;
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  document.getElementById('register-msg').style.display = 'block';
+  e.target.reset();
+  setTimeout(() => { document.getElementById('register-msg').style.display = 'none'; }, 5000);
+}
+
+// ===================== PUBLISHED ARTICLES =====================
+async function loadPublishedArticles() {
+  const container = document.getElementById('published-articles-container');
+  if (!container) return;
+  const articles = await dbLoadPublished();
+  if (articles.length === 0) { container.innerHTML = ''; return; }
+
+  window._publishedArticles = articles;
+  container.innerHTML = articles.map(a => {
+    const data = a.created_at ? new Date(a.created_at).toLocaleDateString('it-IT', {month:'long', year:'numeric'}) : '';
+    return `
+    <div class="excl-hero" style="margin-top:2px;" onclick="openPublishedArticle(${a.id})">
+      <div class="excl-hero-badge"><span class="excl-stamp">RAVEN SCOOP</span></div>
+      <div class="excl-hero-content">
+        <span class="excl-tag">◆ Esclusiva Raven · ${a.categoria||'Gossip'}</span>
+        <h3 class="excl-hero-title">${(a.notizia||'').substring(0,80)}${a.notizia&&a.notizia.length>80?'...':''}</h3>
+        <p class="excl-hero-excerpt">${(a.notizia||'').substring(0,200)}...</p>
+        <div class="excl-meta">
+          <span class="excl-date">${data}</span><span class="excl-dot">·</span>
+          <span class="excl-author">${a.nome&&a.nome!=='Anonimo'?'Fonte: '+a.nome:'Fonte Anonima'}</span><span class="excl-dot">·</span>
+          <span class="excl-read">Raven Original</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Modal per articoli pubblicati
+let currentPublishedArticle = null;
+function openPublishedArticle(id) {
+  const modal = document.getElementById('published-modal');
+  const articles = window._publishedArticles || [];
+  const a = articles.find(x => x.id === id);
+  if (!a) return;
+  currentPublishedArticle = a;
+  document.getElementById('pub-modal-tag').textContent = '◆ Esclusiva Raven · ' + (a.categoria||'Gossip');
+  document.getElementById('pub-modal-title').textContent = (a.notizia||'').substring(0,80) + (a.notizia&&a.notizia.length>80?'...':'');
+  document.getElementById('pub-modal-body').textContent = a.notizia||'';
+  document.getElementById('pub-modal-data').textContent = a.created_at ? new Date(a.created_at).toLocaleDateString('it-IT',{month:'long',year:'numeric'}) : '';
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePublishedArticle() {
+  document.getElementById('published-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ===================== SCROLL REVEAL =====================
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';} });
+}, { threshold: 0.1 });
+loadPublishedArticles();
+document.querySelectorAll('.stat-box, .excl-card, .feature-item').forEach(el => {
+  el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+
+// ===================== ADMIN =====================
+function openAdminPanel() {
+  document.getElementById('admin-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+window.addEventListener('hashchange', checkAdminHash);
+window.addEventListener('load', checkAdminHash);
+function checkAdminHash() {
+  if (window.location.hash === '#admin') {
+    openAdminPanel();
+  }
+}
+function closeAdmin() {
+  document.getElementById('admin-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  history.pushState('', document.title, window.location.pathname);
+}
+
+function doLogin() {
+  const pwd = document.getElementById('admin-pwd').value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('admin-panel-inner').style.display = 'block';
+    renderAdminAll();
+    renderMod('pending');
+  } else {
+    document.getElementById('admin-login-error').style.display = 'block';
+    document.getElementById('admin-pwd').value = '';
+    setTimeout(() => { document.getElementById('admin-login-error').style.display = 'none'; }, 3000);
+  }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAdmin(); });
+
+// ===================== ADMIN RENDER =====================
+let adminCurrentFilter = 'tutte';
+let adminCurrentModalId = null;
+
+async function renderAdminAll() {
+  const list = document.getElementById('admin-seg-list');
+  list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--grey);font-family:Barlow Condensed,sans-serif;letter-spacing:0.2em;">Caricamento...</div>';
+
+  const all = await dbLoad();
+  document.getElementById('admin-stat-totale').textContent = all.length;
+  document.getElementById('admin-stat-nuove').textContent = all.filter(s => !s.letta).length;
+  const oggi = new Date().toLocaleDateString('it-IT');
+  document.getElementById('admin-stat-oggi').textContent = all.filter(s => {
+    const d = s.data || (s.created_at ? new Date(s.created_at).toLocaleString('it-IT') : '');
+    return d.startsWith(oggi);
+  }).length;
+  const cats = {};
+  all.forEach(s => { if(s.categoria) cats[s.categoria] = (cats[s.categoria]||0)+1; });
+  const topCat = Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('admin-stat-cat').textContent = topCat ? topCat[0].split(' ')[0] : '—';
+
+  let filtered = all;
+  if (adminCurrentFilter === 'non lette') filtered = all.filter(s => !s.letta);
+  else if (adminCurrentFilter !== 'tutte') filtered = all.filter(s => s.categoria === adminCurrentFilter);
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="padding:60px;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:1rem;letter-spacing:0.2em;color:var(--grey);text-transform:uppercase;border:1px solid var(--border);">Nessuna segnalazione trovata</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(s => `
+    <div style="display:grid;grid-template-columns:14px 1fr 130px 160px 90px;border:1px solid var(--border);border-top:none;cursor:pointer;transition:background 0.2s;${!s.letta?'border-left:3px solid var(--red);':''}" onmouseover="this.style.background='#111'" onmouseout="this.style.background=''" onclick="adminOpenModal(${s.id})">
+      <div style="padding:16px 8px;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;border-radius:50%;background:${!s.letta?'var(--red)':'var(--border)'};"></div></div>
+      <div style="padding:16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:Barlow Condensed,sans-serif;font-weight:600;color:var(--white);font-size:0.95rem;">${s.nome && s.nome!=='Anonimo' ? s.nome : '<em style=color:var(--grey)>Anonimo</em>'}</span>
+        <span style="font-size:0.82rem;color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${(s.notizia||'').substring(0,80)}...</span>
+      </div>
+      <div style="padding:16px;border-right:1px solid var(--border);display:flex;align-items:center;"><span style="font-family:Barlow Condensed,sans-serif;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--white);background:var(--dark3);border:1px solid var(--border);padding:3px 8px;">${s.categoria||'—'}</span></div>
+      <div style="padding:16px;border-right:1px solid var(--border);display:flex;align-items:center;"><span style="font-family:Barlow Condensed,sans-serif;font-size:0.75rem;color:var(--grey);">${s.data || (s.created_at ? new Date(s.created_at).toLocaleString('it-IT') : '—')}</span></div>
+      <div style="padding:16px;display:flex;align-items:center;justify-content:center;"><button style="background:none;border:1px solid var(--border);color:var(--grey);padding:5px 10px;font-family:Barlow Condensed,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;" onclick="event.stopPropagation();adminDeleteById(${s.id})" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">Elimina</button></div>
+    </div>
+  `).join('');
+}
+
+function adminFilterSeg(cat, btn) {
+  adminCurrentFilter = cat;
+  document.querySelectorAll('.admin-filter-btn').forEach(b => { b.style.background='var(--dark2)'; b.style.borderColor='var(--border)'; b.style.color='var(--grey)'; });
+  btn.style.background = 'var(--red)'; btn.style.borderColor = 'var(--red)'; btn.style.color = 'var(--white)';
+  renderAdminAll();
+}
+
+async function adminOpenModal(id) {
+  const all = await dbLoad();
+  const s = all.find(x => x.id === id);
+  if (!s) return;
+  adminCurrentModalId = id;
+  document.getElementById('amod-tag').textContent = '◆ ' + (s.categoria||'Segnalazione');
+  document.getElementById('amod-nome').textContent = s.nome && s.nome !== 'Anonimo' ? s.nome : 'Mittente Anonimo';
+  document.getElementById('amod-data').textContent = s.data||'—';
+  document.getElementById('amod-riserv').textContent = s.riservatezza||'—';
+  document.getElementById('amod-notizia').textContent = s.notizia||'';
+  document.getElementById('admin-modal').style.display = 'flex';
+  if (!s.letta) {
+    await dbMarkRead(s.id);
+    renderAdminAll();
+  }
+}
+function adminCloseModal() { document.getElementById('admin-modal').style.display = 'none'; adminCurrentModalId = null; }
+
+async function adminDeleteById(id) {
+  if (!confirm('Eliminare?')) return;
+  await dbDelete(id);
+  renderAdminAll();
+}
+async function adminDeleteModal() {
+  if (!confirm('Eliminare?')) return;
+  await dbDelete(adminCurrentModalId);
+  adminCloseModal(); renderAdminAll();
+}
+
+// ===================== MODERAZIONE =====================
+function getMod() { return JSON.parse(localStorage.getItem('raven_mod') || '[]'); }
+function saveMod(arr) { localStorage.setItem('raven_mod', JSON.stringify(arr)); }
+let modFilter = 'pending';
+
+async function syncMod() {
+  const segs = await dbLoad(), mod = getMod(), modIds = mod.map(m => m.id);
+  let changed = false;
+  segs.forEach(s => {
+    if (!modIds.includes(s.id)) {
+      const data = s.data || (s.created_at ? new Date(s.created_at).toLocaleString('it-IT') : '—');
+      mod.unshift({ id: s.id, nome: s.nome, categoria: s.categoria, data: data, testo_originale: s.notizia, testo_modificato: s.notizia, status: 'pending' });
+      changed = true;
+    }
+  });
+  if (changed) saveMod(mod);
+  return mod;
+}
+
+function filterMod(status, btn) {
+  modFilter = status;
+  document.querySelectorAll('.mod-tab-btn').forEach(b => { b.style.borderBottomColor='transparent'; b.style.color='var(--grey)'; });
+  btn.style.borderBottomColor = 'var(--red)'; btn.style.color = 'var(--white)';
+  renderMod(status);
+}
+
+async function renderMod(status) {
+  const all = await syncMod();
+  const filtered = status === 'all' ? all : all.filter(m => m.status === status);
+  const list = document.getElementById('mod-list');
+  if (!list) return;
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="padding:60px;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:1rem;letter-spacing:0.2em;color:var(--grey);text-transform:uppercase;border:1px solid var(--border);">Nessuna storia in questa categoria</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(m => `
+    <div style="background:var(--dark2);border:1px solid var(--border);margin-bottom:2px;" id="modcard-${m.id}">
+      <div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:18px 24px;cursor:pointer;" onclick="toggleModCard(${m.id})">
+        <div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:1rem;font-weight:600;color:var(--white);">${m.nome&&m.nome!=='Anonimo'?m.nome:'Anonimo'} — <span style="color:var(--grey);font-weight:300">${m.categoria||'—'}</span></div>
+          <div style="font-size:0.82rem;color:var(--grey);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;">${(m.testo_modificato||'').substring(0,90)}...</div>
+        </div>
+        <span style="font-family:Barlow Condensed,sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border:1px solid;color:${m.status==='pending'?'#e8b94a':m.status==='approved'?'var(--green)':'var(--red)'};border-color:${m.status==='pending'?'#e8b94a':m.status==='approved'?'var(--green)':'var(--red)'};">${m.status==='pending'?'In attesa':m.status==='approved'?'Approvata':'Rifiutata'}</span>
+        <button style="background:none;border:1px solid var(--border);color:var(--grey);width:32px;height:32px;cursor:pointer;font-size:1rem;">▾</button>
+      </div>
+      <div id="modbody-${m.id}" style="display:none;padding:0 24px 24px;border-top:1px solid var(--border);">
+        <p style="font-family:Barlow Condensed,sans-serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey);margin:16px 0 8px;">Testo Originale</p>
+        <div style="font-size:0.9rem;line-height:1.8;color:var(--light);white-space:pre-wrap;padding:16px;background:var(--dark3);border-left:3px solid var(--border);margin-bottom:16px;">${(m.testo_originale||'').replace(/</g,'&lt;')}</div>
+        <span style="font-family:Barlow Condensed,sans-serif;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:block;">// Modifica / Censura prima di approvare</span>
+        <textarea id="editor-${m.id}" style="width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--white);padding:14px;font-family:Barlow,sans-serif;font-size:0.95rem;line-height:1.8;outline:none;resize:vertical;min-height:120px;">${(m.testo_modificato||'').replace(/</g,'&lt;')}</textarea>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <button onclick="approvaMod(${m.id})" style="background:var(--green);border:none;color:black;padding:10px 20px;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;font-weight:700;">✓ Approva</button>
+          <button onclick="salvaModifica(${m.id})" style="background:none;border:1px solid var(--border);color:var(--grey);padding:10px 20px;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;">Salva Modifiche</button>
+          <button onclick="rifiutaMod(${m.id})" style="background:none;border:1px solid var(--red);color:var(--red);padding:10px 20px;font-family:Barlow Condensed,sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;">✗ Rifiuta</button>
+        </div>
+        <div id="mod-notice-${m.id}" style="display:none;margin-top:12px;padding:12px 16px;background:var(--dark3);border-left:3px solid var(--green);font-family:Barlow Condensed,sans-serif;font-size:0.85rem;color:var(--green);letter-spacing:0.1em;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleModCard(id) {
+  const b = document.getElementById('modbody-' + id);
+  b.style.display = b.style.display === 'none' ? 'block' : 'none';
+}
+function salvaModifica(id) {
+  const mod = getMod(), item = mod.find(m => m.id === id);
+  if (!item) return;
+  item.testo_modificato = document.getElementById('editor-' + id).value;
+  saveMod(mod);
+  const n = document.getElementById('mod-notice-' + id);
+  n.textContent = '✓ Modifiche salvate.'; n.style.display = 'block';
+  setTimeout(() => { n.style.display = 'none'; }, 3000);
+}
+async function approvaMod(id) {
+  salvaModifica(id);
+  const mod = getMod(), item = mod.find(m => m.id === id);
+  if (!item) return;
+  item.status = 'approved'; saveMod(mod);
+  // Pubblica su Supabase
+  try { await dbPublish(id, item.testo_modificato); } catch(e) { console.warn('publish error', e); }
+  loadPublishedArticles();
+  const n = document.getElementById('mod-notice-' + id);
+  n.textContent = '✓ Storia approvata e pubblicata sul sito!'; n.style.display = 'block';
+  setTimeout(() => { renderMod(modFilter); }, 2000);
+}
+async function rifiutaMod(id) {
+  const mod = getMod(), item = mod.find(m => m.id === id);
+  if (!item) return;
+  item.status = 'rejected'; saveMod(mod);
+  try { await dbUnpublish(id); } catch(e) { console.warn('unpublish error', e); }
+  loadPublishedArticles();
+  setTimeout(() => { renderMod(modFilter); }, 300);
+}
+
+function adminShowTab(tab) {
+  document.getElementById('admin-tab-seg').style.display = tab === 'seg' ? 'block' : 'none';
+  document.getElementById('admin-tab-mod').style.display = tab === 'mod' ? 'block' : 'none';
+  document.querySelectorAll('.admin-main-tab').forEach((b, i) => {
+    const active = (tab === 'seg' && i === 0) || (tab === 'mod' && i === 1);
+    b.style.borderBottomColor = active ? 'var(--red)' : 'transparent';
+    b.style.color = active ? 'var(--white)' : 'var(--grey)';
+  });
+}
+</script>
+</body>
+</html>
